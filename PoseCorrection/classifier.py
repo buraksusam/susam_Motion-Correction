@@ -2,10 +2,10 @@ import pickle
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from PoseCorrection.dataset import HV3D
-from PoseCorrection.model import GCN_class
-from PoseCorrection.opt import Options
-from PoseCorrection.utils import *
+from dataset import HV3D
+from model import GCN_class
+from opt import Options
+from utils import *
 
 
 def main(opt):

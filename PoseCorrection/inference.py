@@ -1,7 +1,7 @@
 import torch
 import torch_dct as dct
 
-from PoseCorrection.model import GCN_corr
+from model import GCN_corr
 
 
 def main_PC(poses_uniform):

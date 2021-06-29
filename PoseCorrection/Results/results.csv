@@ -1,0 +1,10 @@
+,SQUAT,Lunges,Plank
+Correct,"{'original': 60.0, 'corrected': 100.0}","{'original': 83.33333333333334, 'corrected': 91.66666666666666}","{'original': 100.0, 'corrected': 100.0}"
+Feets too wide,"{'original': 100.0, 'corrected': 100.0}",,
+Knees inward,"{'original': 100.0, 'corrected': 100.0}",,
+Not low enough,"{'original': 100.0, 'corrected': 100.0}","{'original': 100.0, 'corrected': 10.0}",
+Front bended,"{'original': 85.71428571428571, 'corrected': 85.71428571428571}",,
+Unknown,{},,
+Knees pass toes,,"{'original': 100.0, 'corrected': 90.0}",
+Banana back,,,"{'original': 100.0, 'corrected': 100.0}"
+Rolled back,,,"{'original': 100.0, 'corrected': 100.0}"

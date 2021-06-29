@@ -22,7 +22,7 @@ class Options:
         # ===============================================================
         self.parser.add_argument('--dct_n', type=float, default=25, help='Number of DCT coefficients')
         self.parser.add_argument('--batch', type=float, default=128, help='Batch size')
-        self.parser.add_argument('--hidden', type=float, default=32, help='Number of hidden features')
+        self.parser.add_argument('--hidden', type=float, default=128, help='Number of hidden features')
         self.parser.add_argument('--dropout', type=float, default=0.5, help='Dropout probability, 1 for none')
         self.parser.add_argument('--block', type=float, default=1, help='Number of GC blocks')
         self.parser.add_argument('--lr', type=float, default=0.01, help='Learning rate')
@@ -30,6 +30,8 @@ class Options:
         self.parser.add_argument('--lr_gamma', type=float, default=0.9)
         self.parser.add_argument('--epoch_corr', type=float, default=150, help='Number of epochs for correction')
         self.parser.add_argument('--epoch_class', type=float, default=50, help='Number of epochs for classification')
+        self.parser.add_argument('--num_stage', type=float, default=2, help='Number of Residual Blocks')
+        self.parser.add_argument('--node_n', type=float, default=57, help='Number of Nodes in Graph')
 
     def parse(self):
         self._initial()

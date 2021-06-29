@@ -3,7 +3,7 @@ import torch
 import torch_dct as dct
 import torch.nn as nn
 
-from PoseCorrection.softdtw import SoftDTW
+from softdtw import SoftDTW
 
 
 class AccumLoss(object):
@@ -87,12 +87,15 @@ def train_corr(train_loader, model, optimizer, fact=None, is_cuda=False):
 
     criterion = SoftDTW(use_cuda=is_cuda, gamma=0.01)
     model.train()
-    for i, (batch_id, inputs) in enumerate(train_loader):
+    for i, (batch_id, inputs, targets) in enumerate(train_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
+            targets = targets.float().cuda()
+
         else:
             inputs = inputs.float()
+            targets = targets.float()
         targets = [train_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [train_loader.dataset.inputs_raw[int(i)] for i in batch_id]
         batch_size = inputs.shape[0]
@@ -123,12 +126,14 @@ def evaluate_corr(val_loader, model, fact=None, is_cuda=False):
 
     criterion = SoftDTW(use_cuda=is_cuda, gamma=0.01)
     model.eval()
-    for i, (batch_id, inputs) in enumerate(val_loader):
+    for i, (batch_id, inputs, targets) in enumerate(val_loader):
 
         if is_cuda:
-            inputs = inputs.cuda().float()
+            inputs = inputs.float().cuda()
+            targets = targets.float().cuda()
         else:
             inputs = inputs.float()
+            targets = targets.float()
         targets = [val_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [val_loader.dataset.inputs_raw[int(i)] for i in batch_id]
         batch_size = inputs.shape[0]
@@ -155,12 +160,14 @@ def test_corr(test_loader, model, fact=None, is_cuda=False):
     preds = {'in': [], 'out': [], 'targ': [], 'att': []}
     criterion = SoftDTW(use_cuda=is_cuda, gamma=0.01)
     model.eval()
-    for i, (batch_id, inputs) in enumerate(test_loader):
+    for i, (batch_id, inputs, targets) in enumerate(test_loader):
 
         if is_cuda:
             inputs = inputs.cuda().float()
+            targets = targets.cuda().float()
         else:
             inputs = inputs.float()
+            targets = targets.float()
         targets = [test_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [test_loader.dataset.inputs_raw[int(i)] for i in batch_id]
         batch_size = inputs.shape[0]
@@ -196,12 +203,14 @@ def train_class(train_loader, model, optimizer, is_cuda=False, level=0):
 
     correct = 0
     total = 0
-    for i, (batch_id, inputs) in enumerate(train_loader):
+    for i, (batch_id, inputs, targets_dct) in enumerate(train_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
+            targets_dct = targets_dct.cuda().float()
         else:
             inputs = inputs.float()
+            targets_dct = targets_dct.float()
 
         labels = get_labels([train_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
         batch_size = inputs.shape[0]
@@ -236,12 +245,14 @@ def evaluate_class(val_loader, model, is_cuda=False, level=0):
 
     correct = 0
     total = 0
-    for i, (batch_id, inputs) in enumerate(val_loader):
+    for i, (batch_id, inputs, targets) in enumerate(val_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
+            targets = targets.cuda().float()
         else:
             inputs = inputs.float()
+            targets = targets.float()
 
         labels = get_labels([val_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
         batch_size = inputs.shape[0]
@@ -272,12 +283,14 @@ def test_class(test_loader, model, is_cuda=False, level=0):
 
     correct = 0
     total = 0
-    for i, (batch_id, inputs) in enumerate(test_loader):
+    for i, (batch_id, inputs, targets) in enumerate(test_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
+            targets = targets.cuda().float()
         else:
             inputs = inputs.float()
+            targets = targets.float()
 
         labels = get_labels([test_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
         batch_size = inputs.shape[0]

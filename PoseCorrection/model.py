@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch
 from torch.nn.parameter import Parameter
 import math
+from opt import Options
 
 
 class GraphConvolution(nn.Module):
@@ -89,13 +90,13 @@ class GC_Block(nn.Module):
 
 class GCN_corr(nn.Module):
 
-    def __init__(self, input_feature=25, hidden_feature=128, p_dropout=0.5, num_stage=2, node_n=57):
+    def __init__(self, input_feature=25, hidden_feature=128, p_dropout=0.5, num_stage=1, node_n=57):
         """
-        :param input_feature: num of input feature
-        :param hidden_feature: num of hidden feature
-        :param p_dropout: drop out prob.
-        :param num_stage: number of residual blocks
-        :param node_n: number of nodes in graph
+        :param input_feature: num of input feature 
+        :param hidden_feature: num of hidden feature /replaced with opt.hidden
+        :param p_dropout: drop out prob. /replaced with opt.dropout
+        :param num_stage: number of residual blocks /replaced with opt.num_stage
+        :param node_n: number of nodes in graph /replaced with opt.node_n
         """
         super(GCN_corr, self).__init__()
         self.num_stage = num_stage

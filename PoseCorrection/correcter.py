@@ -2,10 +2,10 @@ import pickle
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from PoseCorrection.dataset import HV3D
-from PoseCorrection.model import GCN_corr
-from PoseCorrection.opt import Options
-from PoseCorrection.utils import *
+from dataset import HV3D
+from model import GCN_corr
+from opt import Options
+from utils import *
 
 
 def main(opt):
@@ -16,7 +16,7 @@ def main(opt):
 
     print('Loading data...')
     try:
-        with open('tmp.pickle', "rb") as f:
+        with open('Data/tmp.pickle', "rb") as f:
             data = pickle.load(f)
         data_train = data['train']
         data_test = data['test']
@@ -47,7 +47,7 @@ def main(opt):
     torch.save(model.state_dict(), opt.corr_model_dir)
 
     model = GCN_corr()
-    model.load_state_dict(torch.load('Results/model_corr1.pt'))
+    model.load_state_dict(torch.load('Results/model_corr.pt'))
 
     if is_cuda:
         model.cuda()
