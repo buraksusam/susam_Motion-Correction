@@ -30,7 +30,7 @@ def main(opt):
     train_loader = DataLoader(dataset=data_train, batch_size=opt.batch, shuffle=True, drop_last=True)
     test_loader = DataLoader(dataset=data_test, batch_size=len(data_test))
 
-    model = GCN_class(hidden_feature=opt.hidden, p_dropout=opt.dropout, classes=12)
+    model = GCN_class(input_feature=opt.dct_n, hidden_feature=opt.hidden, p_dropout=opt.dropout, classes=12)
     if is_cuda:
         model.cuda()
 
@@ -44,7 +44,7 @@ def main(opt):
             tr_l, tr_acc = train_class(train_loader, model, optimizer, is_cuda=is_cuda, level=1)
             tepoch.set_postfix(train_loss=tr_l.item(), train_accuracy=tr_acc)
 
-    model = GCN_class(hidden_feature=opt.hidden, p_dropout=opt.dropout, classes=12)
+    model = GCN_class(input_feature = opt.dct_n, hidden_feature=opt.hidden, p_dropout=opt.dropout, classes=12)
     model.load_state_dict(torch.load(opt.class_model_dir))
 
     if is_cuda:

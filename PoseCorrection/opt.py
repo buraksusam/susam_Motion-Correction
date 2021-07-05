@@ -20,9 +20,9 @@ class Options:
         # ===============================================================
         #                     Model & Running options
         # ===============================================================
-        self.parser.add_argument('--dct_n', type=float, default=25, help='Number of DCT coefficients')
+        self.parser.add_argument('--dct_n', type=float, default=15, help='Number of DCT coefficients')
         self.parser.add_argument('--batch', type=float, default=128, help='Batch size')
-        self.parser.add_argument('--hidden', type=float, default=128, help='Number of hidden features')
+        self.parser.add_argument('--hidden', type=float, default=32, help='Number of hidden features')
         self.parser.add_argument('--dropout', type=float, default=0.5, help='Dropout probability, 1 for none')
         self.parser.add_argument('--block', type=float, default=1, help='Number of GC blocks')
         self.parser.add_argument('--lr', type=float, default=0.01, help='Learning rate')

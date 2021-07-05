@@ -24,8 +24,8 @@ def main_eval(opt):
     is_cuda = torch.cuda.is_available()
 
     # Create models
-    model_corr = GCN_corr()
-    model_class = GCN_class(hidden_feature=opt.hidden)
+    model_corr = GCN_corr(input_feature=opt.dct_n)
+    model_class = GCN_class(input_feature=opt.dct_n, hidden_feature=opt.hidden)
 
     # Load parameters
     model_corr.load_state_dict(torch.load('Results/model_corr.pt'))
@@ -53,14 +53,14 @@ def main_eval(opt):
     test_loader = DataLoader(dataset=data_test, batch_size=len(data_test))
 
     with torch.no_grad():
-        for i, (batch_id, inputs, targets_dct) in enumerate(test_loader):
+        for i, (batch_id, inputs, targetsdct) in enumerate(test_loader):
 
             if is_cuda:
                 inputs = inputs.cuda().float()
-                targets_dct = targets_dct.cuda().float()
+                targetsdct = targetsdct.cuda().float()
             else:
                 inputs = inputs.float()
-                targets_dct = targets_dct.float()
+                targetsdct = targetsdct.float()
 
             labels = get_labels([test_loader.dataset.inputs_label[int(i)] for i in batch_id], level=1)
             # acts, full_labels = get_full_label([test_loader.dataset.inputs_label[int(i)] for i in batch_id])
@@ -70,20 +70,20 @@ def main_eval(opt):
 
     deltas_3d = dct.idct_2d(deltas.cpu())
     inputs_3d = dct.idct_2d(inputs.cpu())
-    targets_3d = dct.idct_2d(targets_dct.cpu())
+    targets_3d = dct.idct_2d(targetsdct.cpu())
     pose_corr_3d_dict = {}
     pose_corr_3d_dict["inputs_3d"] = inputs_3d
     pose_corr_3d_dict["targets_3d"] = targets_3d
     pose_corr_3d_dict["pose_corr_3d"] = inputs_3d + deltas_3d
 
-    with open("Results/pose_3d.pickle", "wb") as f:
+    with open("Results/pose_3d_dct15.pickle", "wb") as f:
         pickle.dump(pose_corr_3d_dict, f)
     
     # summary = np.vstack((acts, full_labels, labels.numpy(), pred_in.numpy(), pred_out.numpy())).T
     # summary = pd.DataFrame(summary, columns=['act', 'full label', 'label', 'original', 'corrected'])
     summary = np.vstack((labels.cpu().numpy(), pred_in.cpu().numpy(), pred_out.cpu().numpy())).T
     summary = pd.DataFrame(summary, columns=['label', 'original', 'corrected'])
-    summary.to_csv("Results/summary.csv", compression=None)
+    summary.to_csv("Results/summary_dct15.csv", compression=None)
     
     count = 0
     total = 0
@@ -112,4 +112,4 @@ if __name__ == "__main__":
 
 print(results)
 results_df = pd.DataFrame(results)
-results_df.to_csv("Results/results.csv", compression=None)    
+results_df.to_csv("Results/results_dct15.csv", compression=None)    

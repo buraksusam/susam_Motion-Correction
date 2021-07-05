@@ -57,9 +57,9 @@ def dtw_loss(originals, deltas, targets, criterion, attentions=None, is_cuda=Fal
 
         if length > deltas[i].shape[1]:
             m = torch.nn.ZeroPad2d((0, length - deltas[i].shape[1], 0, 0))
-            delt = dct.idct_2d(m(deltas[i]).T.unsqueeze(0))
+            delt = dct.idct_2d(m(deltas[i]).T.unsqueeze(0).cpu())
         else:
-            delt = dct.idct_2d(deltas[i, :, :length].T.unsqueeze(0))
+            delt = dct.idct_2d(deltas[i, :, :length].T.unsqueeze(0).cpu())
 
         if attentions is not None:
             delt = torch.mul(delt, attentions[i].T.unsqueeze(0))
@@ -74,7 +74,7 @@ def dtw_loss(originals, deltas, targets, criterion, attentions=None, is_cuda=Fal
         loss += crit
 
         if test:
-            preds.append(out[0].detach().numpy().T)
+            preds.append(out[0].detach().cpu().numpy().T)
 
     if test:
         return loss, preds
@@ -92,10 +92,12 @@ def train_corr(train_loader, model, optimizer, fact=None, is_cuda=False):
         if is_cuda:
             inputs = inputs.float().cuda()
             targets = targets.float().cuda()
+            #targetsdct = targetsdct.float().cuda()
 
         else:
             inputs = inputs.float()
             targets = targets.float()
+            #targetsdct = targetsdct.float()
         targets = [train_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [train_loader.dataset.inputs_raw[int(i)] for i in batch_id]
         batch_size = inputs.shape[0]
@@ -131,9 +133,11 @@ def evaluate_corr(val_loader, model, fact=None, is_cuda=False):
         if is_cuda:
             inputs = inputs.float().cuda()
             targets = targets.float().cuda()
+            #targetsdct = targetsdct.float().cuda()
         else:
             inputs = inputs.float()
             targets = targets.float()
+            #targetsdct = targetsdct.float()
         targets = [val_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [val_loader.dataset.inputs_raw[int(i)] for i in batch_id]
         batch_size = inputs.shape[0]
@@ -165,9 +169,11 @@ def test_corr(test_loader, model, fact=None, is_cuda=False):
         if is_cuda:
             inputs = inputs.cuda().float()
             targets = targets.cuda().float()
+            #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
             targets = targets.float()
+            #targetsdct = targetsdct.float()
         targets = [test_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [test_loader.dataset.inputs_raw[int(i)] for i in batch_id]
         batch_size = inputs.shape[0]
@@ -186,7 +192,7 @@ def test_corr(test_loader, model, fact=None, is_cuda=False):
         preds['in'] = preds['in'] + originals
         preds['out'] = preds['out'] + out
         preds['targ'] = preds['targ'] + targets
-        preds['att'] = preds['att'] + [att[j].detach().numpy() for j in range(att.shape[0])]
+        preds['att'] = preds['att'] + [att[j].detach().cpu().numpy() for j in range(att.shape[0])]
         test_l.update(loss.cpu().data.numpy(), batch_size)
 
     return test_l.avg, preds
@@ -203,14 +209,16 @@ def train_class(train_loader, model, optimizer, is_cuda=False, level=0):
 
     correct = 0
     total = 0
-    for i, (batch_id, inputs, targets_dct) in enumerate(train_loader):
+    for i, (batch_id, inputs, targets) in enumerate(train_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
-            targets_dct = targets_dct.cuda().float()
+            targets = targets.cuda().float()
+            #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
-            targets_dct = targets_dct.float()
+            targets = targets.float()
+            #targetsdct = targetsdct.float()
 
         labels = get_labels([train_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
         batch_size = inputs.shape[0]
@@ -250,9 +258,11 @@ def evaluate_class(val_loader, model, is_cuda=False, level=0):
         if is_cuda:
             inputs = inputs.float().cuda()
             targets = targets.cuda().float()
+            #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
             targets = targets.float()
+            #targetsdct = targetsdct.float()
 
         labels = get_labels([val_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
         batch_size = inputs.shape[0]
@@ -288,9 +298,11 @@ def test_class(test_loader, model, is_cuda=False, level=0):
         if is_cuda:
             inputs = inputs.float().cuda()
             targets = targets.cuda().float()
+            #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
             targets = targets.float()
+            #targetsdct = targetsdct.float()
 
         labels = get_labels([test_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
         batch_size = inputs.shape[0]

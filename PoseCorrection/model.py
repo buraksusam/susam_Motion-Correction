@@ -90,7 +90,7 @@ class GC_Block(nn.Module):
 
 class GCN_corr(nn.Module):
 
-    def __init__(self, input_feature=25, hidden_feature=128, p_dropout=0.5, num_stage=1, node_n=57):
+    def __init__(self, input_feature=25, hidden_feature=128, p_dropout=0.5, num_stage=2, node_n=57):
         """
         :param input_feature: num of input feature 
         :param hidden_feature: num of hidden feature /replaced with opt.hidden
