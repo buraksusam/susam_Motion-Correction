@@ -6,6 +6,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 
+#3d visualization code for evaluation results (can be used for any 3d visualization)
+#you can import this code (Visualize() class) to show visualizations while any code is running
+
 joints = {0: 'Nose', 1: 'Neck', 2: 'RShoulder', 3: 'RElbow', 4: 'RWrist', 5: 'LShoulder', 6: 'LElbow',7: 'LWrist', 
         8: 'MidHip', 9: 'RHip', 10: 'RKnee', 11: 'RAnkle', 12: 'LHip', 13: 'LKnee', 14: 'LAnkle', 15: 'REye', 
         16: 'LEye', 17: 'REar', 18: 'LEar', 19: 'LBigToe', 20: 'LSmallToe', 21: 'LHeel', 22: 'RBigToe', 
@@ -181,8 +184,8 @@ fig = make_subplots(rows=1, cols=11,
                     specs=[[{'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}, {'type': 'Scatter3d'}]],
                    horizontal_spacing = 0, vertical_spacing = 0)
 
-plot = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-frames = []
+plot = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] #in here, the number of elements in the list shows how many frames we will show in the illustration
+frames = []                              #also, the value of any element corresponds to a pose, i.e. 1:correct squat, you should check the data to see more
 
 Ns = [0]
 for el in plot:
@@ -252,38 +255,36 @@ fig.update_layout(scene=scene, scene1=scene, scene2=scene, scene3=scene, scene4=
                                                   dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(2)], {"frame": {"duration": 1, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Feet too wide", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[1], Ns[1]+4)], {"frame": {"duration": 2, "redraw": True},
                                                                      "transition": {"duration": 100}}]),
-                                                  dict(label="SQUAT: Knees inward", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[2], Ns[2]+6)], {"frame": {"duration": 3, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Not low enough", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[3], Ns[3]+8)], {"frame": {"duration": 4, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Front bent", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[4], Ns[4]+10)], {"frame": {"duration": 5, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Front bent", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[5], Ns[5]+12)], {"frame": {"duration": 6, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Front bent", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[6], Ns[6]+14)], {"frame": {"duration": 7, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Front bent", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[7], Ns[7]+16)], {"frame": {"duration": 8, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Front bent", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[8], Ns[8]+18)], {"frame": {"duration": 9, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Front bent", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[9], Ns[9]+20)], {"frame": {"duration": 10, "redraw": True},
                                                                      "transition": {"duration": 0}}]),
-                                                  dict(label="SQUAT: Front bent", method="animate",
+                                                  dict(label="SQUAT: Correct", method="animate",
                                                         args=[[f'{k}' for k in range(Ns[10], Ns[10]+24)], {"frame": {"duration": 10, "redraw": True},
-                                                                     "transition": {"duration": 0}}])])],
-                                          sliders=sliders)
-
+                                                                     "transition": {"duration": 0}}])])])
 
 fig.show()
 #plt.savefig(fig)
