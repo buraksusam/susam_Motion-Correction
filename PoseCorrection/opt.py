@@ -20,8 +20,8 @@ class Options:
         # ===============================================================
         #                     Model & Running options
         # ===============================================================
-        self.parser.add_argument('--dct_n', type=float, default=15, help='Number of DCT coefficients')
-        self.parser.add_argument('--dct_n_class', type=float, default=15, help='Number of DCT coefficients for classification')
+        self.parser.add_argument('--dct_n', type=float, default=25, help='Number of DCT coefficients')
+        self.parser.add_argument('--dct_n_class', type=float, default=25, help='Number of DCT coefficients for classification')
         self.parser.add_argument('--dct_n_corr', type=float, default=15, help='Number of DCT coefficients for correction')
         self.parser.add_argument('--batch', type=float, default=128, help='Batch size')
         self.parser.add_argument('--hidden', type=float, default=32, help='Number of hidden features')

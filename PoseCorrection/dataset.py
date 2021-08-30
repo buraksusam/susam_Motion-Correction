@@ -11,7 +11,7 @@ from softdtw import SoftDTW
 
 class HV3D(Dataset):
 
-    def __init__(self, data_path, dct_n=15, split=0, sets=None, is_cuda=False, add_data=None):
+    def __init__(self, data_path, dct_n=25, split=0, sets=None, is_cuda=False, add_data=None):
         if sets is None:
             sets = [[0, 1], [2], [3]]
 
@@ -21,43 +21,26 @@ class HV3D(Dataset):
         pairs = dtw_pairs(correct, other, is_cuda=is_cuda)
 
         self.targets_label = [i[1] for i in pairs]
-        #print(self.targets_label[0])
         self.inputs_label = [i[0] for i in pairs]
-        #print(self.inputs_label[0].shape)
         self.targets = [correct[i] for i in self.targets_label]
-        #print(self.targets[0].shape)
-        #targets_padded oluştur, correct_padded'dan al!
-        #self.targets_dct = [dct.dct_2d(torch.from_numpy(x))[:, :self.dct_n].numpy() if x.shape[1] >= self.dct_n else
-        #                    dct.dct_2d(torch.nn.ZeroPad2d((0, self.dct_n - x.shape[1], 0, 0))(torch.from_numpy(x))).numpy()
-        #                    for x in self.targets]
-        #import pdb
-        #pdb.set_trace()
         self.targetsdct = []
         for x in self.targets:
             if x.shape[1] >= self.dct_n:
                 self.targetsdct.append(dct.dct_2d(torch.from_numpy(x))[: ,:self.dct_n].numpy())
             else:
-                self.targetsdct.append(dct.dct_2d(torch.nn.ZeroPad2d(0, self.dct_n - x.shape[1], 0, 0)))
-        #print(self.targets_dct[0].shape)              
+                self.targetsdct.append(dct.dct_2d(torch.nn.ZeroPad2d(0, self.dct_n - x.shape[1], 0, 0)))             
         self.inputs_raw = [other[i] for i in self.inputs_label]
-        #print(self.inputs_raw[0].shape)
         self.inputs = [dct.dct_2d(torch.from_numpy(x))[:, :self.dct_n].numpy() if x.shape[1] >= self.dct_n else
                         dct.dct_2d(torch.nn.ZeroPad2d((0, self.dct_n - x.shape[1], 0, 0))(torch.from_numpy(x))).numpy()
                         for x in self.inputs_raw]
-        #print(self.inputs[0].shape)
         self.node_n = np.shape(self.inputs_raw[0])[0]
         self.batch_ids = list(range(len(self.inputs_raw)))
-        #self.targets_dct2 = [dct.dct_2d(torch.from_numpy(x))[:, :self.dct_n].numpy() if x.shape[1] >= self.dct_n else dct.dct_2d(torch.nn.ZeroPad2d((0, self.dct_n - x.shape[1], 0, 0))(torch.from_numpy(x))).numpy() for x in self.targets]
-        #import pdb
-        #pdb.set_trace()
         
     def __len__(self):
         return np.shape(self.inputs)[0]
 
     def __getitem__(self, item):
-        #import pdb
-        #pdb.set_trace()
-        return self.batch_ids[item], self.inputs[item], self.targetsdct[item]
+        return self.batch_ids[item], self.inputs[item], self.targetsdct[item]#, self.inputs_raw[item]
 
 
 def load_data(data_path, subs, add_data=None):
@@ -98,8 +81,6 @@ def load_data(data_path, subs, add_data=None):
     correct = {k: poses_gt[v].reshape(-1, poses_gt.shape[1] * poses_gt.shape[2]).T for k, v in lab1.items()}
     other = {k: poses[v].reshape(-1, poses.shape[1] * poses.shape[2]).T for k, v in labnot1.items()}
     #correct_padded = ...
-    #import pdb
-    #pdb.set_trace()
     #correct.keys() keylere bak (her bir elemanı correct[('Lunges', 'Hugues', 1, 1, 'gt')].shape şeklinde yazarak), array'in shape bak (57,xx) en uzun xx için kalanlara zeropad koy
 
     return correct, other #, correct_padded

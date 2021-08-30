@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 from torch.nn.parameter import Parameter
 import math
-from opt import Options
+#from opt import Options
 
 
 class GraphConvolution(nn.Module):

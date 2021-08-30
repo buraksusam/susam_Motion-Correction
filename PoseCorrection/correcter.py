@@ -30,7 +30,7 @@ def main(opt):
     train_loader = DataLoader(dataset=data_train, batch_size=opt.batch, shuffle=True, drop_last=True)
     test_loader = DataLoader(dataset=data_test, batch_size=len(data_test))
 
-    model = GCN_corr(input_feature=opt.dct_n)
+    model = GCN_corr(input_feature = opt.dct_n)
     if is_cuda:
         model.cuda()
 

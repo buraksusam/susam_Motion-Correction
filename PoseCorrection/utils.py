@@ -91,12 +91,10 @@ def train_corr(train_loader, model, optimizer, fact=None, is_cuda=False):
 
         if is_cuda:
             inputs = inputs.float().cuda()
-            targets = targets.float().cuda()
             #targetsdct = targetsdct.float().cuda()
 
         else:
             inputs = inputs.float()
-            targets = targets.float()
             #targetsdct = targetsdct.float()
         targets = [train_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [train_loader.dataset.inputs_raw[int(i)] for i in batch_id]
@@ -132,11 +130,9 @@ def evaluate_corr(val_loader, model, fact=None, is_cuda=False):
 
         if is_cuda:
             inputs = inputs.float().cuda()
-            targets = targets.float().cuda()
             #targetsdct = targetsdct.float().cuda()
         else:
             inputs = inputs.float()
-            targets = targets.float()
             #targetsdct = targetsdct.float()
         targets = [val_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [val_loader.dataset.inputs_raw[int(i)] for i in batch_id]
@@ -168,11 +164,9 @@ def test_corr(test_loader, model, fact=None, is_cuda=False):
 
         if is_cuda:
             inputs = inputs.cuda().float()
-            targets = targets.cuda().float()
             #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
-            targets = targets.float()
             #targetsdct = targetsdct.float()
         targets = [test_loader.dataset.targets[int(i)] for i in batch_id]
         originals = [test_loader.dataset.inputs_raw[int(i)] for i in batch_id]
@@ -188,7 +182,7 @@ def test_corr(test_loader, model, fact=None, is_cuda=False):
             dtw, out = dtw_loss(originals, deltas, targets, criterion, attentions=att, is_cuda=is_cuda, test=True)
             l1 = fact * torch.sum(torch.abs(att))
             loss = (dtw + l1)
-
+        #import pdb, shape teyit
         preds['in'] = preds['in'] + originals
         preds['out'] = preds['out'] + out
         preds['targ'] = preds['targ'] + targets
@@ -209,15 +203,13 @@ def train_class(train_loader, model, optimizer, is_cuda=False, level=0):
 
     correct = 0
     total = 0
-    for i, (batch_id, inputs, targets) in enumerate(train_loader):
+    for i, (batch_id, inputs) in enumerate(train_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
-            targets = targets.cuda().float()
             #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
-            targets = targets.float()
             #targetsdct = targetsdct.float()
 
         labels = get_labels([train_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
@@ -253,15 +245,13 @@ def evaluate_class(val_loader, model, is_cuda=False, level=0):
 
     correct = 0
     total = 0
-    for i, (batch_id, inputs, targets) in enumerate(val_loader):
+    for i, (batch_id, inputs) in enumerate(val_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
-            targets = targets.cuda().float()
             #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
-            targets = targets.float()
             #targetsdct = targetsdct.float()
 
         labels = get_labels([val_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)
@@ -293,15 +283,13 @@ def test_class(test_loader, model, is_cuda=False, level=0):
 
     correct = 0
     total = 0
-    for i, (batch_id, inputs, targets) in enumerate(test_loader):
+    for i, (batch_id, inputs) in enumerate(test_loader):
 
         if is_cuda:
             inputs = inputs.float().cuda()
-            targets = targets.cuda().float()
             #targetsdct = targetsdct.cuda().float()
         else:
             inputs = inputs.float()
-            targets = targets.float()
             #targetsdct = targetsdct.float()
 
         labels = get_labels([test_loader.dataset.inputs_label[int(i)] for i in batch_id], level=level)

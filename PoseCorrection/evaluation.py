@@ -24,8 +24,8 @@ def main_eval(opt):
     is_cuda = torch.cuda.is_available()
 
     # Create models
-    model_corr = GCN_corr(input_feature=opt.dct_n)
-    model_class = GCN_class(input_feature=opt.dct_n, hidden_feature=opt.hidden)
+    model_corr = GCN_corr()
+    model_class = GCN_class(hidden_feature=opt.hidden)
 
     # Load parameters
     model_corr.load_state_dict(torch.load('Results/model_corr.pt'))
@@ -63,12 +63,24 @@ def main_eval(opt):
                 targetsdct = targetsdct.float()
 
             labels = get_labels([test_loader.dataset.inputs_label[int(i)] for i in batch_id], level=1)
+            originals = [test_loader.dataset.inputs_raw[int(i)] for i in batch_id]
             # acts, full_labels = get_full_label([test_loader.dataset.inputs_label[int(i)] for i in batch_id])
             _, pred_in = torch.max(model_class(inputs).data, 1)
+            #inputs_idct = dct.idct_2d(inputs.cpu())
+            #inputs_corr = []
+            #for x in inputs_idct:
+            #    if x.shape[1] >= opt.dct_n_corr:
+            #        inputs_corr.append(dct.dct_2d(x)[: ,:opt.dct_n_corr].numpy())
+            #    else:
+            #        inputs_corr.append(dct.dct_2d(torch.nn.ZeroPad2d(0, opt.dct_n_corr - x.shape[1], 0, 0)))
+            #inputs_corr = torch.FloatTensor(inputs_corr)
             deltas, att = model_corr(inputs)
+            #corr_output = dct.idct(inputs_corr.cpu()+deltas.cpu())
+            #class_input = torch.nn.functional.pad(input=corr_output, pad = (0, opt.dct_n_class-opt.dct_n_corr, 0, 0), mode='constant', value=0)
             _, pred_out = torch.max(model_class(inputs+deltas).data, 1)
 
     deltas_3d = dct.idct_2d(deltas.cpu())
+    #deltas_3d = torch.nn.functional.pad(input=deltas_3d, pad = (0, opt.dct_n_class-opt.dct_n_corr, 0, 0), mode='constant', value=0)
     inputs_3d = dct.idct_2d(inputs.cpu())
     targets_3d = dct.idct_2d(targetsdct.cpu())
     pose_corr_3d_dict = {}
@@ -76,14 +88,14 @@ def main_eval(opt):
     pose_corr_3d_dict["targets_3d"] = targets_3d
     pose_corr_3d_dict["pose_corr_3d"] = inputs_3d + deltas_3d
 
-    with open("Results/pose_3d_dct15.pickle", "wb") as f:
+    with open("Results/pose_3d.pickle", "wb") as f:
         pickle.dump(pose_corr_3d_dict, f)
     
     # summary = np.vstack((acts, full_labels, labels.numpy(), pred_in.numpy(), pred_out.numpy())).T
     # summary = pd.DataFrame(summary, columns=['act', 'full label', 'label', 'original', 'corrected'])
     summary = np.vstack((labels.cpu().numpy(), pred_in.cpu().numpy(), pred_out.cpu().numpy())).T
     summary = pd.DataFrame(summary, columns=['label', 'original', 'corrected'])
-    summary.to_csv("Results/summary_dct15.csv", compression=None)
+    summary.to_csv("Results/summary.csv", compression=None)
     
     count = 0
     total = 0
@@ -112,4 +124,4 @@ if __name__ == "__main__":
 
 print(results)
 results_df = pd.DataFrame(results)
-results_df.to_csv("Results/results_dct15.csv", compression=None)    
+results_df.to_csv("Results/results.csv", compression=None)    
